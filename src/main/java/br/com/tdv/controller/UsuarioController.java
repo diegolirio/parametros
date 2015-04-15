@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -47,10 +49,9 @@ public class UsuarioController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value="/login", method=RequestMethod.GET, produces="application/json")
-	public ResponseEntity<String> login(String u, HttpSession session) {
+	@RequestMapping(value="/login", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	public ResponseEntity<String> login(@RequestBody Usuario usuario, HttpSession session) {
 		try {
-			Usuario usuario = new Usuario(u);
 			System.out.println(usuario);
 			if(this.usuarioService.login(usuario) == true) {
 				usuario.setNome("Administrador");
