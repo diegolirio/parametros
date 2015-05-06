@@ -8,8 +8,7 @@ import br.com.tdv.model.Usuario;
 public class UsuarioService {
 
 	public boolean login(Usuario usuario) {
-		if("jsantos".equals(usuario.getCodigo())) return true;
-		return false;
+		return "jsantos".equals(usuario.getCodigo()) && "stopdedo".equals(usuario.getSenha());
 	}
 
 }

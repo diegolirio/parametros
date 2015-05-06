@@ -1,7 +1,31 @@
-      <!-- Content Wrapper. Contains page content -->
+'''''''''''''''''''''''''      <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper" ng-hide="usuarioCtrl.isLoggedIn">
-      	<h1 class="text-center"><a href="#/">Realize o Login...</a></h1><br/><br/><br/><br/><br/>
-      </div>
+<!--       	<h1 class="text-center"><a href="#/">Realize o Login...</a></h1><br/><br/><br/><br/><br/> -->
+
+			    <div class="login-box">
+				      <div class="login-box-body">
+<!-- 				        <p class="login-box-msg">Sign in to start your session</p> --> 
+				        <form ng-submit="usuarioCtrl.login(usuarioCtrl.usuario.codigo, usuarioCtrl.usuario.senha)" >
+				          <div class="form-group has-feedback">
+				            <input type="text" class="form-control" placeholder="Usuario" ng-model="usuarioCtrl.usuario.codigo"/>
+				            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+				          </div>
+				          <div class="form-group has-feedback">
+				            <input type="password" class="form-control" placeholder="Senha" ng-model="usuarioCtrl.usuario.senha"/>
+				            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+				          </div>
+				          <div class="row">
+				            <div class="col-xs-8">    
+				            </div><!-- /.col -->
+				            <div class="col-xs-4">
+				              <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+				            </div><!-- /.col -->
+				          </div>
+				        </form>
+				      </div><!-- /.login-box-body -->	
+		    </div><!-- /.login-box -->
+		    <br/><br/><br/><br/><br/><br/>
+      	</div>
       
       <div class="content-wrapper" ng-show="usuarioCtrl.isLoggedIn" ng-controller="ParametrosController as paramsCtrl">
 	        <!-- Content Header (Page header) -->
@@ -50,16 +74,16 @@
 						                      <th style="width: 10px">#</th>
 						                      <th>Nome do Parametro</th>
 						                      <th>Descrição</th>
-						                      <th>Texto</th>
+<!-- 						                      <th>Texto</th> -->
 						                    </tr>
 						                    <tr ng-repeat="p in paramsCtrl.perfis">
 						                      <td><a href ng-click="paramsCtrl.getPerfilPorCodigo(p.codigo)"><span class="glyphicon glyphicon-pencil"></span></a></td>
 						                      <td><a href ng-click="paramsCtrl.getPerfilPorCodigo(p.codigo)">{{p.codigo}}</a></td>
 						                      <td>{{p.descricao}}</td>
-						                      <td>{{p.parat}}</td>
+<!-- 						                      <td>{{p.parat}}</td> -->
 						                    </tr>
-						                  </table>
-				                  	</div>
+						                  </table> 
+				                  	</div> 
 				                  	<div class="col-md-6">
 				                  	
 						                  <div ng-show="paramsCtrl.msgInfo != null" class="alert alert-info alert-dismissable">
@@ -72,15 +96,15 @@
 						                    <!-- text input -->
 						                    <div class="form-group col-md-4">
 						                      <label>Parametro</label>
-						                      <input type="text" class="form-control input-sm" id="idParamCodigo" ng-model="paramsCtrl.perfil.codigo" />
+						                      <input type="text" maxlength="25" class="form-control input-sm" id="idParamCodigo" ng-model="paramsCtrl.perfil.codigo" />
 						                    </div>
 						                    <div class="form-group col-md-8">
 						                      <label>Descricao</label>
-						                      <input type="text" class="form-control input-sm" ng-model="paramsCtrl.perfil.descricao"/>
+						                      <input type="text" maxlength="75" class="form-control input-sm" ng-model="paramsCtrl.perfil.descricao"/>
 						                    </div>
 						                    <div class="form-group col-md-6">
 						                      <label>Resumida</label>
-						                      <input type="text" class="form-control input-sm" ng-model="paramsCtrl.perfil.descricaoResumida" maxlength="30"/>
+						                      <input type="text" maxlength="30" class="form-control input-sm" ng-model="paramsCtrl.perfil.descricaoResumida" maxlength="30"/>
 						                    </div>
 						                    
 							                  <div class="form-group col-md-6">

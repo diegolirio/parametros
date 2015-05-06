@@ -14,8 +14,8 @@ public class FactorConnection {
 	
 	public static Connection getConnection() {
 		Connection conn = null;		
-        FactorConnection.url = "jdbc:oracle:thin:@192.9.200.15:1521/tdp"; // TDX
-		//FactorConnection.url = "jdbc:oracle:thin:@192.9.200.101:1526/tdp"; // TDP
+        //FactorConnection.url = "jdbc:oracle:thin:@192.9.200.15:1521/tdp"; // TDX
+		FactorConnection.url = "jdbc:oracle:thin:@192.9.200.101:1526/tdp"; // TDP
 		//FactorConnection.url = "jdbc:oracle:thin:@201.63.16.210:1521/tdp";
 		FactorConnection.user = "tdvadm";
 		FactorConnection.password = "aged12";		

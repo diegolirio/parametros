@@ -61,9 +61,9 @@ public class PerfilDao {
 	 */
 	public List<Perfil> getList(Aplicacao aplicacao) {
         List<Perfil> perfis = null;
-        Connection conn = null; 
+        Connection conn = null;
         CallableStatement stmt = null;
-        ResultSet rs = null; 
+        ResultSet rs = null;
         System.out.println(aplicacao.getCodigo());
         try {
             conn = FactorConnection.getConnection();
@@ -73,7 +73,7 @@ public class PerfilDao {
             stmt.registerOutParameter(2, OracleTypes.CURSOR);
             stmt.registerOutParameter(3, OracleTypes.CHAR);
             stmt.registerOutParameter(4, OracleTypes.VARCHAR);
-            stmt.execute();		            
+            stmt.execute();
             
             if(stmt.getString(3).charAt(0) != 'N') 
             	throw new RuntimeException(stmt.getString(4));
