@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 
-	<display-name>Parametros - 2.0</display-name>		
+	<display-name>Parametros - 2.1</display-name>		
 	<context-param>
 		<param-name>version</param-name>
-		<param-value>2.0</param-value>
+		<param-value>2.1</param-value>
 	</context-param>
 
 	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->

@@ -117,20 +117,22 @@ create or replace package body Pkg_Usu_Parametros is
                            FROM TABle(XMLSequence(extract(xmltype.createXML(pXmlIn), '/perfil'))) t
                           WHERE 0 = 0)
            loop
+                  --Raise_application_error(-20001, p_cursor.vigencia);  
+           
                   vPerfilRow.Usu_Perfil_Codigo     := p_cursor.codigo;
                   vPerfilRow.Usu_Aplicacao_Codigo  := p_Cursor.Aplicacaocodigo;
                   vPerfilRow.Usu_Perfil_Descricao  := p_cursor.descricao;
                   vPerfilRow.Usu_Perfil_Parat      := p_cursor.parat;
                   vPerfilRow.Usu_Perfil_Descricaoresumida := p_cursor.descricaoresumida;
-                  vPerfilRow.Usu_Perfil_Paran1     := Replace(p_cursor.paran1, '.',',');
-                  vPerfilRow.Usu_Perfil_Paran2     := Replace(p_cursor.paran2, '.',',');
-                  vPerfilRow.Usu_Perfil_Paran3     := Replace(p_cursor.paran3, '.',',');
-                  vPerfilRow.Usu_Perfil_Paran4     := Replace(p_cursor.paran4, '.',',');
-                  vPerfilRow.Usu_Perfil_Paran5     := Replace(p_cursor.paran5, '.',',');
-                  vPerfilRow.Usu_Perfil_Paran6     := Replace(p_cursor.paran6, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran1     := p_cursor.paran1; --Replace(p_cursor.paran1, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran2     := p_cursor.paran2; --Replace(p_cursor.paran2, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran3     := p_cursor.paran3; --Replace(p_cursor.paran3, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran4     := p_cursor.paran4; --Replace(p_cursor.paran4, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran5     := p_cursor.paran5; --Replace(p_cursor.paran5, '.',',');
+                  vPerfilRow.Usu_Perfil_Paran6     := p_cursor.paran6; --Replace(p_cursor.paran6, '.',',');
                   vPerfilRow.Usu_Perfil_Horario    := p_cursor.horario;
                   vPerfilRow.Usu_Perfil_Observacao := p_cursor.observacao;
-                  vPerfilRow.Usu_Perfil_Vigencia   := p_cursor.vigencia;
+                  vPerfilRow.Usu_Perfil_Vigencia   := To_Date(p_cursor.vigencia, 'dd/MM/yyyy');
                   vPerfilRow.Usu_Usuario_Codigocad := p_cursor.usuario;
                   vPerfilRow.Usu_Usuario_Codigoalt := p_cursor.usuarioAlterou;
            end loop;
@@ -174,11 +176,13 @@ create or replace package body Pkg_Usu_Parametros is
     Begin
       for ap in (select extractValue(VALUE(t),'/aplicacaoPerfil/aplicacao/codigo') aplicacao,
                         extractValue(VALUE(t),'/aplicacaoPerfil/perfil/codigo')    perfil,
+                        extractValue(VALUE(t),'/aplicacaoPerfil/perfil/descricao') descricao,
                         extractValue(VALUE(t),'/aplicacaoPerfil/usuario')          usuario,
                         extractValue(VALUE(t),'/aplicacaoPerfil/grupoCodigo')      grupoCodigo,
                         extractValue(VALUE(t),'/aplicacaoPerfil/rota')             rota,
                         extractValue(VALUE(t),'/aplicacaoPerfil/ativo')            ativo,
                         extractValue(VALUE(t),'/aplicacaoPerfil/validade')         validade,
+                        extractValue(VALUE(t),'/aplicacaoPerfil/vigencia')         vigencia,                        
                         extractValue(VALUE(t),'/aplicacaoPerfil/usuarioCadastro')  usuarioCadastro,
                         extractValue(VALUE(t),'/aplicacaoPerfil/usuarioAlteracao') usuarioAlteracao,
                         extractValue(VALUE(t),'/aplicacaoPerfil/parat')            parat,
@@ -193,11 +197,13 @@ create or replace package body Pkg_Usu_Parametros is
       loop
           vAppPerfil.Usu_Aplicacao_Codigo  := ap.aplicacao;
           vAppPerfil.Usu_Perfil_Codigo     := ap.perfil;
+          vAppPerfil.Usu_Aplicacaoperfil_Descricao := ap.descricao;
           vAppPerfil.Usu_Usuario_Codigo    := ap.usuario;
           vAppPerfil.Usu_Grupo_Codigo      := ap.grupoCodigo;
           vAppPerfil.Glb_Rota_Codigo       := ap.rota;
           vAppPerfil.Usu_Aplicacaoperfil_Ativo := ap.ativo;
           vAppPerfil.Usu_Aplicacaoperfil_Validade := ap.validade;
+          vAppPerfil.Usu_Aplicacaoperfil_Vigencia := ap.vigencia;          
           vAppPerfil.Usu_Usuario_Codigocad := ap.usuariocadastro;
           vAppPerfil.Usu_Usuario_Codigoalt := ap.usuarioalteracao;
           vAppPerfil.Usu_Aplicacaoperfil_Parat := ap.parat;
@@ -230,11 +236,12 @@ create or replace package body Pkg_Usu_Parametros is
                           pMessage     Out Varchar2)
   As
   Begin
-    
+      --Raise_application_error(-20001,'Erro provocado por Diego');
       Open pCursor For
         Select *
            From t_usu_perfil p
-           where p.usu_aplicacao_codigo = pAplicacao;
+           where p.usu_aplicacao_codigo = pAplicacao
+           order by p.usu_perfil_codigo;
            
       pStatus := 'N';
       pMessage := 'OK';
@@ -294,8 +301,9 @@ create or replace package body Pkg_Usu_Parametros is
       open pCursor for 
       select *
         from t_Usu_Perfil p
-        where p.usu_perfil_descricao like '%'||Upper(trim(pDescricao))||'%'
-          and trim(p.usu_aplicacao_codigo) = trim(pAplicacao);
+        where trim(p.usu_perfil_codigo) like '%'||Upper(trim(pDescricao))||'%'
+          and trim(p.usu_aplicacao_codigo) = trim(pAplicacao)
+        order by p.usu_perfil_codigo;
 
       pStatus  := 'N';
       pMessage := 'OK!';  
@@ -503,7 +511,7 @@ create or replace package body Pkg_Usu_Parametros is
       Exception
         When Others Then
           pStatus := 'E';
-          pMessage := sqlerrm;
+          pMessage := dbms_utility.format_error_backtrace || ' - ' || sqlerrm;
       End;       
   End Sp_Set_UpdatePerfil;
   
@@ -548,6 +556,9 @@ create or replace package body Pkg_Usu_Parametros is
   vPerfilRow t_Usu_Perfil%RowType;
   Begin
       Begin
+          --Raise_application_error(-20001,'PERFIL_PARAM');
+          --insert into dropme d(d.a,d.x) values('PERFIL_PARAM',pXmlIn);commit;  
+      
           vPerfilRow := Fn_To_Perfil(pXmlIn);
           
           vPerfilRow.Usu_Perfil_Dtcad := sysdate;
@@ -627,6 +638,7 @@ create or replace package body Pkg_Usu_Parametros is
                 ap.usu_aplicacaoperfil_dtalt = sysdate,
                 ap.usu_usuario_codigoalt     = vAppPerfil.Usu_Usuario_Codigoalt,
                 ap.usu_aplicacaoperfil_validade = vAppPerfil.Usu_Aplicacaoperfil_Validade,
+                ap.usu_aplicacaoperfil_vigencia = vAppPerfil.Usu_Aplicacaoperfil_Vigencia,
                 ap.usu_aplicacaoperfil_ativo = vAppPerfil.Usu_Aplicacaoperfil_Ativo
            where ap.usu_aplicacao_codigo = pAplicacao
              and ap.usu_perfil_codigo    = pPerfil
@@ -688,8 +700,12 @@ create or replace package body Pkg_Usu_Parametros is
   vAppPerfil t_Usu_Aplicacaoperfil%rowType;
   Begin
      Begin
-         --Insert Into Dropme d (a, x) values('APLICACAOPERFIL_WEB', pAppPerfilXmlIn);commit;
+         --Insert Into Dropme d (a, x) values('INSERT_APLICACAOPERFIL_WEB', pAppPerfilXmlIn);commit;
          vAppPerfil := Fn_To_AplicacaoPerfil(pAppPerfilXmlIn);
+         vAppPerfil.Usu_Aplicacaoperfil_Dtcad := sysdate;
+         vAppPerfil.Usu_Aplicacaoperfil_Dtalt := sysdate;
+         vAppPerfil.Usu_Aplicacaoperfil_Quenaltsa := 'A';
+         vAppPerfil.Usu_Aplicacaoperfil_Horario := 'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS';
          Insert Into t_Usu_Aplicacaoperfil values vAppPerfil;
          Commit;  
          pStatus := 'N';
